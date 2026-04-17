@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar perfil</title>
+</head>
+<body>
+  <h2>Editar perfil</h2>
+
+  {% if messages %}
+    {% for message in messages %}
+      <p style="color:green">{{ message }}</p>
+    {% endfor %}
+  {% endif %}
+
+  <form method="POST">
+    {% csrf_token %}
+    <h3>Datos personales</h3>
+    {{ usuario_form.as_p }}
+    <h3>Datos médicos</h3>
+    {{ perfil_form.as_p }}
+    <button type="submit">Guardar cambios</button>
+  </form>
+
+  <a href="{% url 'ver_perfil' %}">Cancelar</a>
+</body>
+</html>

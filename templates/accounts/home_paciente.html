@@ -10,3 +10,23 @@
   <a href="{% url 'logout' %}">Cerrar sesión</a>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Home Paciente</title>
+</head>
+<body>
+  <h2>Bienvenido, {{ user.first_name }}</h2>
+  <p>Rol: {{ user.rol }}</p>
+
+  <h3>¿Qué querés hacer?</h3>
+  <ul>
+    <li><a href="{% url 'ver_perfil' %}">Ver mi perfil</a></li>
+    <li><a href="#">Reservar turno</a></li>
+    <li><a href="#">Mis turnos</a></li>
+  </ul>
+
+  <a href="{% url 'logout' %}">Cerrar sesión</a>
+</body>
+</html>
