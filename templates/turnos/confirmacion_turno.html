@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Turno confirmado</title>
+</head>
+<body>
+  <h2>Turno confirmado</h2>
+
+  <p>Tu turno fue reservado correctamente.</p>
+
+  <h3>Resumen</h3>
+  <p><strong>Médico:</strong> {{ turno.profesional }}</p>
+  <p><strong>Fecha y hora:</strong> {{ turno.fecha_hora }}</p>
+  <p><strong>Estado:</strong> {{ turno.estado }}</p>
+  <p><strong>Motivo:</strong> {{ turno.servicio }}</p>
+
+  <p>Recibirás un recordatorio por WhatsApp antes del turno.</p>
+
+  <a href="{% url 'mis_turnos' %}">Ver mis turnos</a><br><br>
+  <a href="{% url 'home_paciente' %}">Volver al inicio</a>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reservar turno</title>
+</head>
+<body>
+  <h2>Consultorios Las Lomitas</h2>
+  <h3>Reservar turno</h3>
+
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Confirmar turno</button>
+  </form>
+
+  <a href="{% url 'home_paciente' %}">Cancelar</a>
+</body>
+</html>

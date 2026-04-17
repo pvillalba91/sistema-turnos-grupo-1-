@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mis turnos</title>
+</head>
+<body>
+  <h2>Mis turnos</h2>
+
+  {% if turnos %}
+    {% for turno in turnos %}
+      <div style="border:1px solid #ccc; padding:10px; margin:10px 0;">
+        <p><strong>Médico:</strong> {{ turno.profesional }}</p>
+        <p><strong>Fecha y hora:</strong> {{ turno.fecha_hora }}</p>
+        <p><strong>Estado:</strong> {{ turno.get_estado_display }}</p>
+        <p><strong>Motivo:</strong> {{ turno.servicio }}</p>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No tenés turnos reservados todavía.</p>
+  {% endif %}
+
+  <a href="{% url 'reservar_turno' %}">Reservar nuevo turno</a><br><br>
+  <a href="{% url 'home_paciente' %}">Volver al inicio</a>
+</body>
+</html>
