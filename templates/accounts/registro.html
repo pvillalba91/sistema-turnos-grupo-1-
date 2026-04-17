@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro</title>
+</head>
+<body>
+  <h2>Consultorios Las Lomitas</h2>
+  <h3>Creá tu cuenta</h3>
+
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Crear cuenta</button>
+  </form>
+
+  <p><a href="{% url 'login' %}">Ya tengo cuenta · Iniciar sesión</a></p>
+</body>
+</html>
