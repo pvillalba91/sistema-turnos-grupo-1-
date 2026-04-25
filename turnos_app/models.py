@@ -1,13 +1,33 @@
+from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
 
 class Profesional(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        related_name='perfil_profesional'
+    )
     especialidad = models.CharField(max_length=100)
     rubro = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"{self.user.get_full_name()} - {self.especialidad}"
+        # Usamos el email o el nombre de usuario por si no completaron el nombre completo
+        return f"{self.user.username} - {self.especialidad}"
+
+class HorarioDisponible(models.Model):
+    # En lugar de 'User', usamos 'settings.AUTH_USER_MODEL'
+    # Es la forma más segura de referenciar al usuario en Django
+    profesional = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    
+    dia_semana = models.IntegerField(choices=[
+        (0, 'Lunes'), (1, 'Martes'), (2, 'Miércoles'), 
+        (3, 'Jueves'), (4, 'Viernes'), (5, 'Sábado')
+    ])
+    hora_inicio = models.TimeField()
+    hora_fin = models.TimeField()
+
+    def __str__(self):
+        return f"{self.get_dia_semana_display()}: {self.hora_inicio} a {self.hora_fin}"
 
 class Turno(models.Model):
     ESTADOS = [

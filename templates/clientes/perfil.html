@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi perfil</title>
+</head>
+<body>
+  <h2>Mi perfil</h2>
+
+  <h3>Datos personales</h3>
+  <p><strong>Nombre:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+  <p><strong>Email:</strong> {{ user.email }}</p>
+  <p><strong>Teléfono:</strong> {{ user.telefono }}</p>
+
+  <h3>Datos médicos</h3>
+  <p><strong>DNI:</strong> {{ perfil.dni }}</p>
+  <p><strong>Fecha de nacimiento:</strong> {{ perfil.fecha_nacimiento }}</p>
+  <p><strong>Obra social:</strong> {{ perfil.obra_social }}</p>
+  <p><strong>Dirección:</strong> {{ perfil.direccion }}</p>
+
+  <a href="{% url 'editar_perfil' %}">Editar perfil</a><br><br>
+  <a href="{% url 'home_paciente' %}">Volver al inicio</a>
+</body>
+</html>
