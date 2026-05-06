@@ -16,11 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from turnos_app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('turnos_app.urls')), # Tu lógica principal
     path('accounts/', include('accounts.urls')), # El login que hizo Pri
+    path('reservar-confirmar/<int:medico_id>/<int:horario_id>/', views.formulario_reserva, name='formulario_reserva'),
     path('clientes/', include('clientes.urls')), # El registro de clientes
-     
 ]

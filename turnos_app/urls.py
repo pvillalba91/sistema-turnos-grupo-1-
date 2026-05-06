@@ -15,5 +15,8 @@ urlpatterns = [
     path('eliminar-horario/<int:horario_id>/', views.eliminar_horario, name='eliminar_horario'),
     path('reservar/', views.seleccion_profesional, name='seleccion_profesional'),
     path('disponibilidad/<int:profesional_id>/', views.disponibilidad_medico, name='disponibilidad_medico'),
+    path('reservar/confirmar-seleccion/', views.confirmar_seleccion_paciente, name='confirmar_seleccion'),
+    path('mi-ficha-personal/', views.ver_perfil, name='ver_perfil_fijo'),
+    path('mis-turnos/', views.mis_turnos, name='mis_turnos'),
 
 ]

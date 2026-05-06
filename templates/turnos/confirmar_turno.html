@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmar Turno - Tp-Grupo1</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f4f7f6; }
+        .card-confirmacion { border-top: 5px solid #198754; border-radius: 12px; }
+        .dato-turno { background: #f8f9fa; border-radius: 8px; padding: 15px; margin-bottom: 10px; border-left: 3px solid #dee2e6; }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow card-confirmacion">
+                    <div class="card-body p-4">
+                        <div class="text-center mb-4">
+                            <i class="bi bi-calendar-check text-success display-4"></i>
+                            <h2 class="fw-bold mt-2">Verificá tu Turno</h2>
+                            <p class="text-muted">Estás a un paso de completar tu reserva.</p>
+                        </div>
+
+                        <div class="dato-turno">
+                            <small class="text-uppercase text-muted d-block">Profesional</small>
+                            <span class="h5 mb-0">Dr/a. {{ medico.first_name }} {{ medico.last_name }}</span>
+                        </div>
+
+                        <div class="dato-turno">
+                            <small class="text-uppercase text-muted d-block">Fecha</small>
+                            <span class="h5 mb-0">{{ fecha }}</span>
+                        </div>
+
+                        <div class="dato-turno">
+                            <small class="text-uppercase text-muted d-block">Horario</small>
+                            <span class="h5 mb-0">{{ inicio }} hs</span>
+                        </div>
+
+                        <form method="POST" class="mt-4">
+                            {% csrf_token %}
+                            <!-- Enviamos los datos ocultos para que el POST los procese -->
+                            <input type="hidden" name="fecha" value="{{ fecha }}">
+                            <input type="hidden" name="hora" value="{{ inicio }}">
+                            
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    Confirmar Turno
+                                </button>
+                                <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                                    Corregir / Volver
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <p class="text-center mt-3 small text-muted">
+                    Tp-Grupo1 | Sistema de Gestión de Salud
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

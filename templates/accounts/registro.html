@@ -38,6 +38,13 @@
                                         {{ field.label }}
                                     </label>
                                     {{ field }}
+                                
+                                    {% if field.name == 'telefono' %}
+                                        <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                            Ingresalo con código de área (sin el 0 ni el 15) para recibir recordatorios de turnos.
+                                        </small>
+                                    {% endif %}
+                                    
                                     {% if field.errors %}
                                         {% for error in field.errors %}
                                             <div class="text-danger" style="font-size: 0.75rem;">{{ error }}</div>

@@ -21,13 +21,13 @@ class HorarioDisponible(models.Model):
     
     dia_semana = models.IntegerField(choices=[
         (0, 'Lunes'), (1, 'Martes'), (2, 'Miércoles'), 
-        (3, 'Jueves'), (4, 'Viernes'), (5, 'Sábado')
+        (3, 'Jueves'), (4, 'Viernes'), (5, 'Sábado'), (6, 'Domingo')
     ])
     hora_inicio = models.TimeField()
     hora_fin = models.TimeField()
-
+    duracion_turno = models.PositiveIntegerField(default=30) 
     def __str__(self):
-        return f"{self.get_dia_semana_display()}: {self.hora_inicio} a {self.hora_fin}"
+        return f"{self.get_dia_semana_display()}: {self.hora_inicio} a {self.hora_fin} (cada {self.duracion_turno} min)"
 
 class Turno(models.Model):
     ESTADOS = [

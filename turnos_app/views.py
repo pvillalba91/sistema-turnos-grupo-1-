@@ -7,6 +7,8 @@ from django.shortcuts import get_object_or_404, redirect #error 404
 from django.contrib.auth.decorators import login_required
 from .forms import RegistroPacienteForm
 from django.contrib.auth import login, get_user_model
+from datetime import datetime, timedelta
+
 User = get_user_model()
 
 def home(request):
@@ -64,7 +66,6 @@ def completar_turno(request, turno_id):
 
 @login_required
 def gestionar_horarios(request):
-    # Solo los profesionales pueden entrar acá
     if request.user.rol != 'profesional':
         return redirect('home_paciente')
 
@@ -72,13 +73,14 @@ def gestionar_horarios(request):
         dia = request.POST.get('dia')
         inicio = request.POST.get('inicio')
         fin = request.POST.get('fin')
+        duracion = request.POST.get('duracion', 30) # Tomamos la duración del formulario
         
-        # Guardamos el nuevo horario vinculado al médico logueado
         HorarioDisponible.objects.create(
             profesional=request.user,
             dia_semana=dia,
             hora_inicio=inicio,
-            hora_fin=fin
+            hora_fin=fin,
+            duracion_turno=duracion # <-- Agregamos esto
         )
         return redirect('gestionar_horarios')
 
@@ -130,12 +132,115 @@ def seleccion_profesional(request):
     profesionales = User.objects.filter(rol='profesional') 
     return render(request, 'turnos/seleccion_profesional.html', {'profesionales': profesionales}) #Lista de medicos que el paciente puede elegir
 
+
 @login_required
 def disponibilidad_medico(request, profesional_id):
     medico = User.objects.get(id=profesional_id)
-    horarios = HorarioDisponible.objects.filter(profesional=medico).order_by('dia_semana', 'hora_inicio')
+    # Traemos todos los horarios configurados
+    horarios_queryset = HorarioDisponible.objects.filter(profesional=medico)
     
+    semana_offset = int(request.GET.get('semana', 0))
+    ahora = timezone.now()
+    hoy = ahora.date()
+    
+    lunes_semana_actual = hoy - timedelta(days=hoy.weekday())
+    lunes_objetivo = lunes_semana_actual + timedelta(weeks=semana_offset)
+    
+    agenda_final = []
+    nombres_dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+
+    for i in range(7):
+        fecha_dia = lunes_objetivo + timedelta(days=i)
+        
+        # CAMBIO CLAVE: Filtramos todos los bloques que coincidan con este día
+        bloques_del_dia = horarios_queryset.filter(dia_semana=i)
+        
+        turnos_totales_dia = []
+        
+        # Recorremos cada bloque (ej: el de la mañana y el de la tarde)
+        for horario_config in bloques_del_dia:
+            inicio_dt = datetime.combine(fecha_dia, horario_config.hora_inicio)
+            fin_dt = datetime.combine(fecha_dia, horario_config.hora_fin)
+            actual = inicio_dt
+            
+            while actual + timedelta(minutes=horario_config.duracion_turno) <= fin_dt:
+                hora_inicio_str = actual.strftime("%H:%M")
+                pasado = (fecha_dia < hoy) or (fecha_dia == hoy and actual.time() < ahora.time())
+                
+                turnos_totales_dia.append({
+                    'inicio': hora_inicio_str,
+                    'ocupado': pasado
+                })
+                actual += timedelta(minutes=horario_config.duracion_turno)
+
+        # Ordenamos los turnos por hora para que no aparezcan mezclados si se cargaron desordenados[cite: 2]
+        turnos_totales_dia = sorted(turnos_totales_dia, key=lambda x: x['inicio'])
+
+        agenda_final.append({
+            'dia_nombre': nombres_dias[i],
+            'fecha_txt': fecha_dia.strftime("%d/%m/%Y"),
+            'fecha_sql': fecha_dia.strftime("%Y-%m-%d"),
+            'turnos': turnos_totales_dia,
+            'atiende': bloques_del_dia.exists() # Si hay al menos un bloque, atiende[cite: 2]
+        })
+
     return render(request, 'turnos/disponibilidad_medico.html', {
         'medico': medico,
-        'horarios': horarios
-    }) #Muestra horarios disponibles
+        'agenda': agenda_final,
+        'semana': semana_offset,
+        'prox': semana_offset + 1,
+        'prev': semana_offset - 1,
+    })
+
+#FORMULARIO DE RESERVA DE TURNO
+@login_required
+def formulario_reserva(request, medico_id, horario_id):
+    medico = User.objects.get(id=medico_id)
+    horario = HorarioDisponible.objects.get(id=horario_id)
+    
+    # Lista de días para validar (0=Lunes, etc.)
+    dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+    nombre_dia = dias[horario.dia_semana]
+
+    return render(request, 'turnos/formulario_reserva.html', {
+        'medico': medico,
+        'horario': horario,
+        'nombre_dia': nombre_dia
+    })
+
+
+#CONFIRMACION DE TURNO:
+@login_required
+def confirmar_seleccion_paciente(request):
+    medico_id = request.GET.get('medico')
+    inicio = request.GET.get('inicio')
+    fecha = request.GET.get('fecha') # Recibimos la fecha real (ej: 2026-05-11)
+
+    medico = User.objects.get(id=medico_id)
+
+    if request.method == 'POST':
+        # ACÁ es donde Gianluca va a crear el objeto Turno en la base de datos
+        # Por ahora, podés redirigir a una página de éxito o al home del paciente
+        return redirect('home_paciente')
+
+    return render(request, 'turnos/confirmar_turno.html', {
+        'medico': medico,
+        'inicio': inicio,
+        'fecha': fecha,
+    })
+
+#VER MI PERFIL (PACIENTE)
+@login_required
+@login_required
+def ver_perfil(request):
+    return render(request, 'clientes/perfil.html', {'usuario': request.user})
+
+
+#++++++++++++++++++++++++++++++
+#Integracion para Gian de Mis Turnos
+def mis_turnos(request):
+    # Cuando Gianluca integre la base de datos, va a cambiar 'turnos': [] por la consulta real
+    return render(request, 'turnos/mis_turnos.html', {'turnos': []})
+
+
+

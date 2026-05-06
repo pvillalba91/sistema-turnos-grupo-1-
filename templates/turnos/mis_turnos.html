@@ -1,26 +1,73 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Mis turnos</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Turnos - Tp-Grupo1</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
+        .navbar { background-color: #1a237e; }
+        .card-turno { border-radius: 15px; border: none; transition: transform 0.2s; }
+        .card-turno:hover { transform: translateY(-3px); }
+    </style>
 </head>
 <body>
-  <h2>Mis turnos</h2>
+    <nav class="navbar navbar-dark mb-5 shadow-sm">
+        <div class="container">
+            <span class="navbar-brand fw-bold">Tp-Grupo1 | Gestión de Salud</span>
+            <a href="{% url 'ver_perfil_fijo' %}" class="btn btn-outline-light btn-sm rounded-pill px-3">
+                <i class="bi bi-person-circle me-1"></i> Mi Perfil
+            </a>
+        </div>
+    </nav>
 
-  {% if turnos %}
-    {% for turno in turnos %}
-      <div style="border:1px solid #ccc; padding:10px; margin:10px 0;">
-        <p><strong>Médico:</strong> {{ turno.profesional }}</p>
-        <p><strong>Fecha y hora:</strong> {{ turno.fecha_hora }}</p>
-        <p><strong>Estado:</strong> {{ turno.get_estado_display }}</p>
-        <p><strong>Motivo:</strong> {{ turno.servicio }}</p>
-      </div>
-    {% endfor %}
-  {% else %}
-    <p>No tenés turnos reservados todavía.</p>
-  {% endif %}
+    <div class="container">
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-8 text-center">
+                <h2 class="fw-bold text-primary">Mis Turnos Programados</h2>
+                <p class="text-muted">Aquí podés visualizar el historial y los próximos turnos médicos.</p>
+            </div>
+        </div>
 
-  <a href="{% url 'reservar_turno' %}">Reservar nuevo turno</a><br><br>
-  <a href="{% url 'home_paciente' %}">Volver al inicio</a>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                
+                {% if turnos %}
+                    {% for turno in turnos %}
+                        <div class="card card-turno shadow-sm mb-3">
+                            <div class="card-body d-flex justify-content-between align-items-center p-4">
+                                <div>
+                                    <h5 class="fw-bold mb-1 text-dark">
+                                        <i class="bi bi-calendar-check me-2 text-success"></i> {{ turno.fecha|date:"d/m/Y" }}
+                                    </h5>
+                                    <p class="text-muted mb-0 small">
+                                        <i class="bi bi-clock me-1"></i> Hora: {{ turno.hora }} | 
+                                        <i class="bi bi-person-badge me-1"></i> Profesional: {{ turno.profesional }}
+                                    </p>
+                                </div>
+                                <div>
+                                    <span class="badge bg-success rounded-pill px-3 py-2">Confirmado</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info text-center py-5 shadow-sm rounded-4" role="alert">
+                        <i class="bi bi-info-circle fs-2 d-block mb-3 text-primary"></i>
+                        <h4 class="alert-heading fw-bold">¡Sin turnos programados!</h4>
+                        <p class="mb-4">Actualmente no tenés turnos asignados en el sistema.</p>
+                        <a href="{% url 'seleccion_profesional' %}" class="btn btn-primary btn-sm px-4 py-2 rounded-pill">
+                            <i class="bi bi-plus-circle me-1"></i> Reservar Nuevo Turno
+                        </a>
+                    </div>
+                {% endif %}
+                
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

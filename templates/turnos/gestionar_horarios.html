@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Gestionar Horarios - Tp-Grupo1</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
 <body class="bg-light">
     <nav class="navbar navbar-dark bg-dark mb-4">
@@ -15,14 +16,17 @@
 
     <div class="container">
         <div class="row">
+            <!-- Formulario de Carga -->
             <div class="col-md-4">
                 <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-primary text-white"><b>Cargar Nuevo Horario</b></div>
+                    <div class="card-header bg-primary text-white">
+                        <i class="bi bi-clock-history me-2"></i><b>Cargar Nuevo Horario</b>
+                    </div>
                     <div class="card-body">
                         <form method="post">
                             {% csrf_token %}
                             <div class="mb-3">
-                                <label class="form-label">Día</label>
+                                <label class="form-label">Día de atención</label>
                                 <select name="dia" class="form-select">
                                     <option value="0">Lunes</option>
                                     <option value="1">Martes</option>
@@ -33,45 +37,73 @@
                                     <option value="6">Domingo</option>
                                 </select>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Desde</label>
-                                <input type="time" name="inicio" class="form-control" step="60" required>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Desde</label>
+                                    <input type="time" name="inicio" class="form-control" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Hasta</label>
+                                    <input type="time" name="fin" class="form-control" required>
+                                </div>
                             </div>
+                            <!-- NUEVO CAMPO: Duración del Turno -->
                             <div class="mb-3">
-                                <label class="form-label">Hasta</label>
-                                <input type="time" name="fin" class="form-control" step="60" required>
+                                <label class="form-label">Duración de cada turno (minutos)</label>
+                                <div class="input-group">
+                                    <input type="number" name="duracion" class="form-control" placeholder="Ej: 30" min="5" max="240" required>
+                                    <span class="input-group-text">min</span>
+                                </div>
+                                <div class="form-text">Esto definirá los intervalos que verá el paciente.</div>
                             </div>
-                            <button type="submit" class="btn btn-success w-100">Guardar</button>
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-plus-circle me-1"></i> Guardar Horario
+                            </button>
                         </form>
                     </div>
                 </div>
             </div>
 
+            <!-- Listado de Horarios -->
             <div class="col-md-8">
                 <div class="card shadow-sm">
-                    <div class="card-header bg-white"><b>Mis Horarios Cargados</b></div>
-                    <div class="card-body">
-                        <table class="table">
-                            <thead>
+                    <div class="card-header bg-white">
+                        <i class="bi bi-list-ul me-2"></i><b>Mis Horarios Configurados</b>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
                                 <tr>
                                     <th>Día</th>
-                                    <th>Rango</th>
-                                    <th>Acción</th>
+                                    <th>Rango Horario</th>
+                                    <th>Duración</th>
+                                    <th class="text-center">Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for h in horarios %}
                                 <tr>
-                                    <td>{{ h.get_dia_semana_display }}</td>
+                                    <td class="fw-bold">{{ h.get_dia_semana_display }}</td>
                                     <td>{{ h.hora_inicio|time:"H:i" }} - {{ h.hora_fin|time:"H:i" }}</td>
-                                    <td><a href="{% url 'eliminar_horario' h.id %}" class="btn btn-danger btn-sm">Borrar</a></td>
+                                    <td><span class="badge bg-info text-dark">{{ h.duracion_turno }} min</span></td>
+                                    <td class="text-center">
+                                        <a href="{% url 'eliminar_horario' h.id %}" class="btn btn-danger btn-sm">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </td>
                                 </tr>
                                 {% empty %}
-                                <tr><td colspan="3" class="text-center text-muted">No hay horarios.</td></tr>
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">No tenés horarios cargados aún.</td>
+                                </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
+                </div>
+                <div class="alert alert-info mt-3 small">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Si necesitás cambiar la duración de un día, eliminá el registro y cargalo nuevamente.
                 </div>
             </div>
         </div>

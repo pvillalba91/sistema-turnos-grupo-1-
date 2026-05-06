@@ -9,6 +9,10 @@ class RegistroPacienteForm(UserCreationForm):
     first_name = forms.CharField(label="Nombre")
     last_name = forms.CharField(label="Apellido")
     email = forms.EmailField(label="Email")
+    telefono = forms.CharField(
+        required=True, 
+        label="Teléfono (WhatsApp)",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 1122334455'}))
     
     # El campo DNI con el truco para el teclado numérico del celu
     dni = forms.CharField(
@@ -23,7 +27,7 @@ class RegistroPacienteForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         # Quitamos 'username' y agregamos los nuevos
-        fields = ('dni', 'first_name', 'last_name', 'email')
+        fields = ('dni', 'first_name', 'last_name', 'email', 'telefono')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
