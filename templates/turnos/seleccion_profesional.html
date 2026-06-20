@@ -52,17 +52,17 @@
                     <div class="card h-100 shadow-sm card-profesional">
                         <div class="card-body d-flex align-items-center">
                             <div class="avatar-circle me-3">
-                                {{ p.first_name|first }}{{ p.last_name|first }}
+                                {{ p.user.first_name|first }}{{ p.user.last_name|first }}
                             </div>
                             <div>
-                                <h5 class="card-title mb-0 fw-bold">{{ p.first_name }} {{ p.last_name }}</h5>
+                                <h5 class="card-title mb-0 fw-bold">{{ p.user.first_name }} {{ p.user.last_name }}</h5>
                                 <p class="card-text text-muted small mb-0">
                                     {{ p.especialidad|default:"Clínica Médica" }}
                                 </p>
                             </div>
                         </div>
                         <div class="card-footer bg-transparent border-0 pb-3">
-                            <a href="{% url 'disponibilidad_medico' p.id %}" class="btn btn-primary btn-sm w-100">
+                            <a href="{% url 'disponibilidad_medico' p.user.id %}" class="btn btn-primary btn-sm w-100">
                                 Ver Disponibilidad
                             </a>
                         </div>

@@ -128,9 +128,9 @@ def redirect_by_role(request):
     
 @login_required
 def seleccion_profesional(request): 
-    # Traemos a todos los usuarios que tengan el rol de profesional
-    profesionales = User.objects.filter(rol='profesional') 
-    return render(request, 'turnos/seleccion_profesional.html', {'profesionales': profesionales}) #Lista de medicos que el paciente puede elegir
+    # En vez de traer Users, traemos los Profesionales con sus datos de usuario vinculados
+    profesionales = Profesional.objects.select_related('user').all() 
+    return render(request, 'turnos/seleccion_profesional.html', {'profesionales': profesionales})
 
 
 @login_required
