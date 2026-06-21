@@ -48,10 +48,10 @@ def panel_profesional(request):
     profesional = get_object_or_404(Profesional, user=request.user)
     
     # Turnos que tiene que atender (Confirmados)
-    pendientes = Turno.objects.filter(estado='CON') # Luego filtraremos por el ID del médico
+    pendientes = Turno.objects.filter(estado='CON', profesional=profesional) # Luego filtraremos por el ID del médico
     
     # Turnos que ya atendió hoy (Completados)
-    atendidos = Turno.objects.filter(estado='COM')
+    atendidos = Turno.objects.filter(estado='COM', profesional=profesional)
     
     return render(request, 'accounts/home_profesional.html', {
         'turnos': pendientes,
