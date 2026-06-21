@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil Completo - Tp-Grupo1</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
+        .navbar { background-color: #1a237e; }
+        .card-profile { border: none; border-radius: 20px; overflow: hidden; }
+        .profile-header {
+            background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+            height: 120px;
+        }
+        .profile-body { padding: 2rem; position: relative; }
+        .profile-avatar {
+            width: 120px; height: 120px;
+            background: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            border: 6px solid #fff;
+            margin: -80px auto 1rem auto;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .profile-avatar i { font-size: 4rem; color: #1a237e; }
+        .info-group { margin-bottom: 1.5rem; }
+        .info-label { 
+            font-size: 0.75rem; 
+            color: #78909c; 
+            text-transform: uppercase; 
+            font-weight: 700; 
+            letter-spacing: 1px; 
+            margin-bottom: 0.3rem; 
+        }
+        .info-data { 
+            font-size: 1.05rem; 
+            color: #263238; 
+            font-weight: 500; 
+            border-bottom: 2px solid #eceff1; 
+            padding-bottom: 0.5rem; 
+        }
+        .badge-role { font-size: 0.9rem; padding: 0.5rem 1.2rem; border-radius: 50px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark mb-5 shadow-sm">
+        <div class="container">
+            <span class="navbar-brand fw-bold">Tp-Grupo1 | Perfil de Paciente</span>
+            <a href="{% url 'home_paciente' %}" class="btn btn-outline-light btn-sm rounded-pill px-3">
+                <i class="bi bi-arrow-left me-1"></i> Volver
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card card-profile shadow-lg">
+                    <div class="profile-header"></div>
+                    <div class="profile-body">
+                        <div class="profile-avatar">
+                            <i class="bi bi-person-badge"></i>
+                        </div>
+                        
+                        <div class="text-center mb-5">
+                            <h2 class="fw-bold mb-1">{{ usuario.first_name }} {{ usuario.last_name }}</h2>
+                            <span class="badge badge-role bg-primary text-uppercase">{{ usuario.rol }}</span>
+                        </div>
+
+                        <div class="row g-4 text-start">
+                            <div class="col-md-6">
+                                <div class="info-group">
+                                    <div class="info-label"><i class="bi bi-person me-1"></i> Nombre</div>
+                                    <div class="info-data">{{ usuario.first_name }}</div>
+                                </div>
+                                <div class="info-group">
+                                    <div class="info-label"><i class="bi bi-person-vcard me-1"></i> DNI (Usuario)</div>
+                                    <div class="info-data">{{ usuario.username }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-group">
+                                    <div class="info-label"><i class="bi bi-person me-1"></i> Apellido</div>
+                                    <div class="info-data">{{ usuario.last_name }}</div>
+                                </div>
+                                <div class="info-group">
+                                    <div class="info-label"><i class="bi bi-envelope me-1"></i> Email</div>
+                                    <div class="info-data">{{ usuario.email|default:"Sin registrar" }}</div>
+                                </div>
+                                <div class="info-group">
+                                    <div class="info-label"><i class="bi bi-telephone me-1"></i> Teléfono</div>
+                                    <div class="info-data">{{ usuario.telefono|default:"No disponible" }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 text-center border-top">
+                            <p class="text-muted small mb-0">Miembro activo desde: {{ usuario.date_joined|date:"d/m/Y" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

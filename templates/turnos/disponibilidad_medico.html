@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva de Turnos - Tp-Grupo1</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .card-medico { border-left: 5px solid #0d6efd; background: white; border-radius: 10px; }
+        .turno-btn { border-radius: 6px; font-weight: 500; font-size: 0.85rem; }
+        .ocupado { background-color: #e9ecef !important; color: #6c757d !important; border: 1px solid #dee2e6 !important; pointer-events: none; opacity: 0.6; }
+        .accordion-button { font-weight: 600; }
+        .badge-semana { font-size: 0.9rem; padding: 0.6rem 1rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark mb-4 shadow">
+        <div class="container">
+            <span class="navbar-brand">Tp-Grupo1 | Gestión de Turnos</span>
+            <a href="{% url 'seleccion_profesional' %}" class="btn btn-outline-light btn-sm">Volver</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card-medico p-4 mb-4 shadow-sm">
+            <h2 class="h4 mb-1">Dr/a. {{ medico.first_name }} {{ medico.last_name }}</h2>
+            <p class="text-muted mb-0 small">Seleccioná un día y un horario para reservar</p>
+        </div>
+
+        <div class="row mb-4 align-items-center">
+            <div class="col-4">
+                <a href="?semana={{ prev }}" class="btn btn-outline-primary btn-sm w-100">
+                    <i class="bi bi-arrow-left"></i> Anterior
+                </a>
+            </div>
+            <div class="col-4 text-center">
+                <span class="badge bg-primary badge-semana w-100">
+                    Semana Actual
+                </span>
+            </div>
+            <div class="col-4 text-center">
+                <a href="?semana={{ prox }}" class="btn btn-outline-primary btn-sm w-100">
+                    Siguiente <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="accordion mb-5 shadow-sm" id="agendaAcc">
+            {% for dia in agenda %}
+                <div class="accordion-item border-0 mb-2 rounded overflow-hidden">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed py-3" type="button" data-bs-toggle="collapse" data-bs-target="#dia{{ forloop.counter }}">
+                            <i class="bi bi-calendar3 me-3 text-primary"></i>
+                            {{ dia.dia_nombre }} — {{ dia.fecha_txt }}
+                        </button>
+                    </h2>
+                    <div id="dia{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#agendaAcc">
+                        <div class="accordion-body bg-white">
+                            {% if dia.atiende %}
+                                <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-2">
+                                    {% for t in dia.turnos %}
+                                        <div class="col">
+                                            {% if t.ocupado %}
+                                                <button class="btn btn-light w-100 ocupado py-2">{{ t.inicio }}</button>
+                                            {% else %}
+                                                <a href="{% url 'confirmar_seleccion' %}?medico={{ medico.id }}&inicio={{ t.inicio }}&fecha={{ dia.fecha_sql }}" 
+                                                   class="btn btn-outline-primary w-100 turno-btn py-2">
+                                                    {{ t.inicio }}
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center py-3 text-muted">
+                                    <i class="bi bi-slash-circle me-1"></i> El profesional no atiende este día.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
