@@ -22,12 +22,13 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            # ACÁ ESTÁN LOS CAMBIOS HACIA LAS RUTAS REALES:
             if user.rol == 'paciente':
-                return redirect('home_paciente')
+                return redirect('home_paciente') 
             elif user.rol == 'profesional':
-                return redirect('home_profesional')
+                return redirect('panel_profesional') # <-- Apunta a la vista de tus turnos
             elif user.rol == 'recepcionista':
-                return redirect('home_recepcionista')
+                return redirect('panel_recepcion') # <-- Apunta al panel de recepción
             elif user.rol == 'admin':
                 return redirect('home_admin')
             else:

@@ -18,5 +18,6 @@ urlpatterns = [
     path('reservar/confirmar-seleccion/', views.confirmar_seleccion_paciente, name='confirmar_seleccion'),
     path('mi-ficha-personal/', views.ver_perfil, name='ver_perfil_fijo'),
     path('mis-turnos/', views.mis_turnos, name='mis_turnos'),
+    path('profesional/exportar-historial/', views.exportar_historial_csv, name='exportar_historial_csv'),
 
 ]
