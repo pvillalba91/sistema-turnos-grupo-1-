@@ -26,4 +26,6 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')), # El login que hizo Pri
     path('reservar-confirmar/<int:medico_id>/<int:horario_id>/', views.formulario_reserva, name='formulario_reserva'),
     path('clientes/', include('clientes.urls')), # El registro de clientes
+    path('perfil/editar/', views.editar_perfil, name='editar_perfil'),
+    path('mis-turnos/cancelar/<int:turno_id>/', views.cancelar_turno_paciente, name='cancelar_turno_paciente'),
 ]

@@ -167,9 +167,15 @@ def disponibilidad_medico(request, profesional_id):
                 hora_inicio_str = actual.strftime("%H:%M")
                 pasado = (fecha_dia < hoy) or (fecha_dia == hoy and actual.time() < ahora.time())
                 
+                turno_ocupado = Turno.objects.filter(
+                    profesional__user=medico,
+                    fecha_hora=datetime.combine(fecha_dia, datetime.strptime(hora_inicio_str, "%H:%M").time()),
+                    estado__in=['PEN', 'CON']
+                ).exists()
+                
                 turnos_totales_dia.append({
                     'inicio': hora_inicio_str,
-                    'ocupado': pasado
+                    'ocupado': pasado or turno_ocupado
                 })
                 actual += timedelta(minutes=horario_config.duracion_turno)
 
@@ -269,5 +275,22 @@ def mis_turnos(request):
         turnos = []
     return render(request, 'turnos/mis_turnos.html', {'turnos': turnos})
 
+#EDITAR PERFIL (PACIENTE)
+@login_required
+def editar_perfil(request):
+    if request.method == 'POST':
+        request.user.first_name = request.POST.get('first_name', '')
+        request.user.last_name = request.POST.get('last_name', '')
+        request.user.email = request.POST.get('email', '')
+        request.user.telefono = request.POST.get('telefono', '')
+        request.user.save()
+        return redirect('ver_perfil_fijo')
+    return redirect('ver_perfil_fijo')
 
-
+#CANCELAR TURNO (PACIENTE)
+@login_required
+def cancelar_turno_paciente(request, turno_id):
+    turno = get_object_or_404(Turno, id=turno_id)
+    turno.estado = 'CAN'
+    turno.save()
+    return redirect('mis_turnos')
