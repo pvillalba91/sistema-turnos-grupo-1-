@@ -40,10 +40,10 @@
                             <div class="card-body d-flex justify-content-between align-items-center p-4">
                                 <div>
                                     <h5 class="fw-bold mb-1 text-dark">
-                                        <i class="bi bi-calendar-check me-2 text-success"></i> {{ turno.fecha|date:"d/m/Y" }}
+                                        <i class="bi bi-calendar-check me-2 text-success"></i> {{ turno.fecha_hora|date:"d/m/Y" }}
                                     </h5>
                                     <p class="text-muted mb-0 small">
-                                        <i class="bi bi-clock me-1"></i> Hora: {{ turno.hora }} | 
+                                        <i class="bi bi-clock me-1"></i> Hora: {{ turno.fecha_hora|time:"H:i" }} |
                                         <i class="bi bi-person-badge me-1"></i> Profesional: {{ turno.profesional }}
                                     </p>
                                 </div>

@@ -214,14 +214,37 @@ def formulario_reserva(request, medico_id, horario_id):
 def confirmar_seleccion_paciente(request):
     medico_id = request.GET.get('medico')
     inicio = request.GET.get('inicio')
-    fecha = request.GET.get('fecha') # Recibimos la fecha real (ej: 2026-05-11)
+    fecha = request.GET.get('fecha')
 
     medico = User.objects.get(id=medico_id)
 
     if request.method == 'POST':
-        # ACÁ es donde Gianluca va a crear el objeto Turno en la base de datos
-        # Por ahora, podés redirigir a una página de éxito o al home del paciente
-        return redirect('home_paciente')
+        medico_id_post = request.GET.get('medico')
+        inicio_post = request.GET.get('inicio')
+        fecha_post = request.GET.get('fecha')
+
+        medico_post = User.objects.get(id=medico_id_post)
+        profesional = Profesional.objects.get(user=medico_post)
+
+        fecha_hora_str = f"{fecha_post} {inicio_post}"
+        fecha_hora = datetime.strptime(fecha_hora_str, "%Y-%m-%d %H:%M")
+        fecha_hora = timezone.make_aware(fecha_hora)
+
+        from clientes.models import Perfil
+        perfil, created = Perfil.objects.get_or_create(
+            usuario=request.user,
+            defaults={'dni': request.user.username}
+        )
+
+        Turno.objects.create(
+            cliente=perfil,
+            profesional=profesional,
+            fecha_hora=fecha_hora,
+            estado='CON',
+            servicio=profesional.especialidad
+        )
+
+        return redirect('mis_turnos')
 
     return render(request, 'turnos/confirmar_turno.html', {
         'medico': medico,
@@ -235,12 +258,16 @@ def confirmar_seleccion_paciente(request):
 def ver_perfil(request):
     return render(request, 'clientes/perfil.html', {'usuario': request.user})
 
-
-#++++++++++++++++++++++++++++++
-#Integracion para Gian de Mis Turnos
+#MIS TURNOS (PACIENTE)
+@login_required
 def mis_turnos(request):
-    # Cuando Gianluca integre la base de datos, va a cambiar 'turnos': [] por la consulta real
-    return render(request, 'turnos/mis_turnos.html', {'turnos': []})
+    from clientes.models import Perfil
+    try:
+        perfil = Perfil.objects.get(usuario=request.user)
+        turnos = Turno.objects.filter(cliente=perfil).order_by('-fecha_hora')
+    except Perfil.DoesNotExist:
+        turnos = []
+    return render(request, 'turnos/mis_turnos.html', {'turnos': turnos})
 
 
 
