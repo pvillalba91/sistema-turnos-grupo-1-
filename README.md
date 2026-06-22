@@ -13,7 +13,7 @@ Sigue estos pasos para levantar el servidor de desarrollo en tu computadora:
 ### 1. Clonar el repositorio
 Abre tu terminal y clona el proyecto (si aún no lo has bajado):
 ```bash
-git clone [https://github.com/pvillalba91/sistema-turnos-grupo-1-](https://github.com/pvillalba91/sistema-turnos-grupo-1-)
+git clone https://github.com/pvillalba91/sistema-turnos-grupo-1-
 cd sistema-turnos-grupo-1-
 ```
 
